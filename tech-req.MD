@@ -6,3 +6,9 @@ express
 ejs
 mongoose
 method-override
+morgan
+ejs-mate
+
+database:
+
+mongodb
