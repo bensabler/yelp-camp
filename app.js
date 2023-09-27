@@ -6,6 +6,9 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const ExpressError = require("./utils/ExpressError");
 const methodOverride = require("method-override");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
 
 const campgrounds = require("./routes/campgrounds");
 const reviews = require("./routes/reviews");
@@ -43,10 +46,25 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+app.use(passport.initialize()); // sets up passport
+app.use(passport.session()); // allows persistent login sessions
+passport.use(new LocalStrategy(User.authenticate())); // use the local strategy
+passport.serializeUser(User.serializeUser()); // how to store a user in a session
+passport.deserializeUser(User.deserializeUser()); // how to get a user out of a session
+
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();
+});
+
+app.get("/fakeUser", async (req, res) => {
+  const user = new User({
+    email: "bensabler@protonmail.com",
+    username: "bensabler",
+  });
+  const newUser = await User.register(user, "dummyPassword");
+  res.send(newUser);
 });
 
 app.use("/campgrounds", campgrounds);
