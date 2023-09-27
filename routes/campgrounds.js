@@ -83,12 +83,16 @@ router.get(
   // Ensure the user is authenticated before access
   isLoggedIn,
   catchAsync(async (req, res) => {
-    // Find the campground by its ID
-    const campground = await Campground.findById(req.params.id);
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
     // If the campground does not exist, flash an error message and redirect
     if (!campground) {
       req.flash("error", "Cannot find that campground!");
       return res.redirect("/campgrounds");
+    }
+    if (!campground.author.equals(req.user._id)) {
+      req.flash("error", "You do not have permission to do that!");
+      return res.redirect(`/campgrounds/${id}`);
     }
     // Render the edit form for the found campground
     res.render("campgrounds/edit", { campground });
@@ -104,8 +108,13 @@ router.put(
   catchAsync(async (req, res) => {
     // Extract the campground ID from the request parameters
     const { id } = req.params;
+    const campground = await Campground.findById(id);
+    if (!campground.author.equals(req.user._id)) {
+      req.flash("error", "You do not have permission to do that!");
+      return res.redirect(`/campgrounds/${id}`);
+    }
     // Update the campground with the provided data from the request body
-    const campground = await Campground.findByIdAndUpdate(id, {
+    const camp = await Campground.findByIdAndUpdate(id, {
       ...req.body.campground,
     });
     // Flash a success message and redirect to the updated campground's details page
