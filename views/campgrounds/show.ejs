@@ -22,10 +22,9 @@
           >Edit</a
         >
         <form
-          class="d-inline validated-form"
+          class="d-inline"
           action="/campgrounds/<%= campground._id %>?_method=DELETE"
           method="POST"
-          \
         >
           <button class="btn btn-danger">Delete</button>
         </form>
@@ -55,7 +54,7 @@
         <textarea
           class="form-control"
           id="body"
-          name="body"
+          name="review[body]"
           rows="3"
           required
         ></textarea>
@@ -63,5 +62,11 @@
       </div>
       <button type="submit" class="btn btn-success">Submit</button>
     </form>
+    <% for(let review of campground.reviews) { %>
+    <div class="mb-3">
+      <p>Rating: <%= review.rating %></p>
+      <p>Review: <%= review.body %></p>
+    </div>
+    <% } %>
   </div>
 </div>
