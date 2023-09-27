@@ -4,43 +4,53 @@ const passport = require("passport");
 const catchAsync = require("../utils/catchAsync");
 const User = require("../models/user");
 
-// show the register form
+// Route to display the registration form
 router.get("/register", (req, res) => {
-  res.render("users/register"); // render the register form
+  res.render("users/register"); // Rendering the registration form
 });
 
-// register a new user
+// Route to register a new user
 router.post(
   "/register",
-  // wrapper that allows us to catch errors
   catchAsync(async (req, res) => {
+    // Using the catchAsync utility to handle async operations
     try {
-      const { email, username, password } = req.body; // destructure from req.body
-      const user = new User({ email, username }); // create a new user
-      const registeredUser = await User.register(user, password); // register the user with passport
-      req.flash("success", "Welcome to Yelp Camp!"); // flash a success message
-      res.redirect("/campgrounds"); // redirect to /campgrounds
+      // Destructuring relevant information from the request body
+      const { email, username, password } = req.body;
+      // Creating a new user instance with email and username (password will be handled by passport)
+      const user = new User({ email, username });
+      // Using passport's register method to handle password hashing and save the user to the database
+      const registeredUser = await User.register(user, password);
+      // Flash a welcome message to the user
+      req.flash("success", "Welcome to Yelp Camp!");
+      // Redirecting user to campgrounds page after successful registration
+      res.redirect("/campgrounds");
     } catch (err) {
-      req.flash("error", err.message); // flash an error message
-      res.redirect("/register"); // redirect to /register
+      // In case of an error, flash the error message
+      req.flash("error", err.message);
+      // Redirect user back to registration page
+      res.redirect("/register");
     }
   })
 );
 
-// show the login form
+// Route to display the login form
 router.get("/login", (req, res) => {
-  res.render("users/login"); // render the login form
+  res.render("users/login"); // Rendering the login form
 });
 
-// login a user
+// Route to handle user login
 router.post(
   "/login",
+  // Using passport's authenticate method to validate user's credentials
   passport.authenticate("local", {
-    failureFlash: true,
-    failureRedirect: "/login",
+    failureFlash: true, // Flash an error message if authentication fails
+    failureRedirect: "/login", // Redirect back to login page if authentication fails
   }),
   (req, res) => {
+    // If authentication is successful, flash a welcome back message
     req.flash("success", "Welcome back!");
+    // Redirect user to campgrounds page after successful login
     res.redirect("/campgrounds");
   }
 );
