@@ -21,10 +21,17 @@ router.post(
       const user = new User({ email, username });
       // Using passport's register method to handle password hashing and save the user to the database
       const registeredUser = await User.register(user, password);
-      // Flash a welcome message to the user
-      req.flash("success", "Welcome to Yelp Camp!");
-      // Redirecting user to campgrounds page after successful registration
-      res.redirect("/campgrounds");
+      // Using passport's login method to log the user in
+      req.login(registeredUser, (err) => {
+        // If there is an error, throw an error
+        if (err) {
+          return next(err);
+        }
+        // Flash a welcome message to the user
+        req.flash("success", "Welcome to Yelp Camp!");
+        // Redirecting user to campgrounds page after successful registration
+        res.redirect("/campgrounds");
+      });
     } catch (err) {
       // In case of an error, flash the error message
       req.flash("error", err.message);
@@ -64,6 +71,6 @@ router.get("/logout", (req, res, next) => {
     req.flash("success", "Goodbye!");
     res.redirect("/campgrounds");
   });
-}); 
+});
 
 module.exports = router;
