@@ -11,6 +11,9 @@ ejs-mate
 joi
 express-session
 connect-flash
+passport
+passport-local
+passport-local-mongoose
 
 database:
 
