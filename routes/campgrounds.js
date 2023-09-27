@@ -48,6 +48,8 @@ router.post(
   catchAsync(async (req, res) => {
     // Create a new Campground instance with the request body data
     const campground = new Campground(req.body.campground);
+    // Set the author of the campground to the current user
+    campground.author = req.user._id;
     // Save the new campground to the database
     await campground.save();
     // Flash a success message and redirect to the campground's details page
@@ -61,9 +63,10 @@ router.get(
   "/:id",
   catchAsync(async (req, res) => {
     // Find the campground by its ID and populate the associated reviews
-    const campground = await Campground.findById(req.params.id).populate(
-      "reviews"
-    );
+    const campground = await Campground.findById(req.params.id)
+      .populate("reviews")
+      .populate("author");
+    console.log(campground);
     // If the campground does not exist, flash an error message and redirect to the campgrounds index
     if (!campground) {
       req.flash("error", "Cannot find that campground!");
