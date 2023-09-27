@@ -1,25 +1,9 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 const catchAsync = require("../utils/catchAsync");
-const { reviewSchema } = require("../schemas.js");
-const ExpressError = require("../utils/ExpressError");
+const { validateReview } = require("../middleware");
 const Campground = require("../models/campground");
 const Review = require("../models/review");
-
-// Middleware to validate incoming reviews against the reviewSchema
-const validateReview = (req, res, next) => {
-  // Using the reviewSchema to validate the incoming request body
-  const { error } = reviewSchema.validate(req.body);
-  // If there's an error, map through each error detail and create a message
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    // Throw a new ExpressError with the generated message and a 400 status code
-    throw new ExpressError(msg, 400);
-  } else {
-    // If no errors, proceed to the next middleware
-    next();
-  }
-};
 
 // Route to post a new review
 router.post(

@@ -1,26 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const catchAsync = require("../utils/catchAsync");
-const { campgroundSchema } = require("../schemas.js");
-const { isLoggedIn } = require("../middleware");
-
-const ExpressError = require("../utils/ExpressError");
+const { isLoggedIn, isAuthor, validateCampground } = require("../middleware");
 const Campground = require("../models/campground");
-
-// Middleware to validate the campground data
-const validateCampground = (req, res, next) => {
-  // Validate the request body against the campground schema
-  const { error } = campgroundSchema.validate(req.body);
-  if (error) {
-    // Extract the validation error messages
-    const msg = error.details.map((el) => el.message).join(",");
-    // Throw an Express error with the validation messages and a 400 status
-    throw new ExpressError(msg, 400);
-  } else {
-    // If there are no validation errors, proceed to the next middleware
-    next();
-  }
-};
 
 // Route to display all campgrounds
 router.get(
@@ -82,6 +64,8 @@ router.get(
   "/:id/edit",
   // Ensure the user is authenticated before access
   isLoggedIn,
+  // Ensure the user is the author of the campground before access
+  isAuthor,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
@@ -89,10 +73,6 @@ router.get(
     if (!campground) {
       req.flash("error", "Cannot find that campground!");
       return res.redirect("/campgrounds");
-    }
-    if (!campground.author.equals(req.user._id)) {
-      req.flash("error", "You do not have permission to do that!");
-      return res.redirect(`/campgrounds/${id}`);
     }
     // Render the edit form for the found campground
     res.render("campgrounds/edit", { campground });
@@ -104,17 +84,14 @@ router.put(
   "/:id",
   // Ensure the user is authenticated before access
   isLoggedIn,
+  // Ensure the user is the author of the campground before access
+  isAuthor,
   validateCampground,
   catchAsync(async (req, res) => {
     // Extract the campground ID from the request parameters
     const { id } = req.params;
-    const campground = await Campground.findById(id);
-    if (!campground.author.equals(req.user._id)) {
-      req.flash("error", "You do not have permission to do that!");
-      return res.redirect(`/campgrounds/${id}`);
-    }
     // Update the campground with the provided data from the request body
-    const camp = await Campground.findByIdAndUpdate(id, {
+    const campground = await Campground.findByIdAndUpdate(id, {
       ...req.body.campground,
     });
     // Flash a success message and redirect to the updated campground's details page
@@ -128,6 +105,8 @@ router.delete(
   "/:id",
   // Ensure the user is authenticated before access
   isLoggedIn,
+  // Ensure the user is the author of the campground before access
+  isAuthor,
   catchAsync(async (req, res) => {
     // Extract the campground ID from the request parameters
     const { id } = req.params;
