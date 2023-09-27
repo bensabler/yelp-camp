@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 const catchAsync = require("../utils/catchAsync");
-const { validateReview, isLoggedIn } = require("../middleware");
+const { validateReview, isLoggedIn, isReviewAuthor } = require("../middleware");
 const Campground = require("../models/campground");
 const Review = require("../models/review");
 
@@ -36,6 +36,10 @@ router.post(
 // Route to delete a review
 router.delete(
   "/:reviewId",
+  // First, ensure the user is logged in using the isLoggedIn middleware
+  isLoggedIn,
+  // Next, ensure the user is the author of the review using the isReviewAuthor middleware
+  isReviewAuthor,
   // Use the catchAsync utility to handle asynchronous functions
   catchAsync(async (req, res) => {
     // Extract the campground ID and review ID from the request parameters

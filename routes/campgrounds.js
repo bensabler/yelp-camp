@@ -46,7 +46,12 @@ router.get(
   catchAsync(async (req, res) => {
     // Find the campground by its ID and populate the associated reviews
     const campground = await Campground.findById(req.params.id)
-      .populate("reviews")
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "author",
+        },
+      })
       .populate("author");
     console.log(campground);
     // If the campground does not exist, flash an error message and redirect to the campgrounds index

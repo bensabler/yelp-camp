@@ -1,6 +1,7 @@
 const { campgroundSchema, reviewSchema } = require("./schemas.js");
 const ExpressError = require("./utils/ExpressError");
 const Campground = require("./models/campground");
+const Review = require("./models/review");
 
 module.exports.isLoggedIn = (req, res, next) => {
   // Ensure the user is authenticated before accessing the form
@@ -41,6 +42,20 @@ module.exports.isAuthor = async (req, res, next) => {
   const campground = await Campground.findById(id);
   // If the current user is not the author of the campground, flash an error message and redirect
   if (!campground.author.equals(req.user._id)) {
+    req.flash("error", "You do not have permission to do that!");
+    return res.redirect(`/campgrounds/${id}`);
+  }
+  // If the current user is the author of the campground, proceed to the next middleware
+  next();
+};
+
+module.exports.isReviewAuthor = async (req, res, next) => {
+  // Extract the campground ID from the request parameters
+  const { reviewId } = req.params;
+  // Find the campground by its ID
+  const review = await Review.findById(reviewId);
+  // If the current user is not the author of the campground, flash an error message and redirect
+  if (!review.author.equals(req.user._id)) {
     req.flash("error", "You do not have permission to do that!");
     return res.redirect(`/campgrounds/${id}`);
   }
