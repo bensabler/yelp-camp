@@ -9,6 +9,7 @@ method-override
 morgan
 ejs-mate
 joi
+express-session
 
 database:
 
