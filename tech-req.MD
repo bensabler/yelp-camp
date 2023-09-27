@@ -8,6 +8,7 @@ mongoose
 method-override
 morgan
 ejs-mate
+joi
 
 database:
 
