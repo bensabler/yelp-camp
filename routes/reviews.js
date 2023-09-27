@@ -1,13 +1,15 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 const catchAsync = require("../utils/catchAsync");
-const { validateReview } = require("../middleware");
+const { validateReview, isLoggedIn } = require("../middleware");
 const Campground = require("../models/campground");
 const Review = require("../models/review");
 
 // Route to post a new review
 router.post(
   "/",
+  // First, ensure the user is logged in using the isLoggedIn middleware
+  isLoggedIn,
   // First, validate the review using the validateReview middleware
   validateReview,
   // Use the catchAsync utility to handle asynchronous functions
@@ -16,6 +18,8 @@ router.post(
     const campground = await Campground.findById(req.params.id);
     // Create a new review using the incoming request body
     const review = new Review(req.body.review);
+    // Set the review's author to the current user
+    review.author = req.user._id;
     // Add the new review to the campground's reviews array
     campground.reviews.push(review);
     // Save the review to the database
