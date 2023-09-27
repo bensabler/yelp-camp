@@ -10,6 +10,7 @@ morgan
 ejs-mate
 joi
 express-session
+connect-flash
 
 database:
 
