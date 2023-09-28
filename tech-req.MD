@@ -14,6 +14,8 @@ connect-flash
 passport
 passport-local
 passport-local-mongoose
+multer
+dotenv
 
 database:
 
@@ -23,3 +25,7 @@ css:
 
 bootstrap 5
 starability
+
+cloud storage:
+
+cloudinary
