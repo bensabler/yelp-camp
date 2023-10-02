@@ -1,10 +1,12 @@
 // Importing the campground model
 const Campground = require("../models/campground");
+const { cloudinary } = require("../cloudinary");
 
 // Controller to fetch and display all campgrounds
 module.exports.index = async (req, res) => {
   // Fetching all the campgrounds from the database
   const campgrounds = await Campground.find({});
+
   // Rendering the index view and passing in the fetched campgrounds
   res.render("campgrounds/index", { campgrounds });
 };
@@ -78,6 +80,16 @@ module.exports.updateCampground = async (req, res) => {
   campground.image.push(...imgs);
   // Save the updated campground to the database
   await campground.save();
+  // If any images were deleted, delete them from the database
+  if (req.body.deleteImages) {
+    for (let filename of req.body.deleteImages) {
+      // Delete the image from Cloudinary
+      await cloudinary.uploader.destroy(filename);
+    }
+    await campground.updateOne({
+      $pull: { image: { filename: { $in: req.body.deleteImages } } },
+    });
+  }
   req.flash("success", "Successfully updated campground!");
   res.redirect(`/campgrounds/${campground._id}`);
 };
