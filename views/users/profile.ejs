@@ -1,0 +1,139 @@
+<% layout('layouts/boilerplate') %>
+<div class="row">
+  <div class="col-lg-4">
+    <div class="card mb-4 border-dark">
+      <div class="card-body text-center">
+        <i
+          class="bi bi-person-circle"
+          style="font-size: 10rem; color: black"
+          alt="avatar"
+        ></i>
+        <h5 class="my-3"><%= user.username %></h5>
+        <p class="text-muted mb-1">Full Stack Developer</p>
+        <p class="text-muted mb-4">Bay Area, San Francisco, CA</p>
+        <div class="d-flex justify-content-center mb-2">
+          <button type="button" class="btn btn-outline-dark ms-1">
+            Message
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-8">
+    <div class="card mb-4 border-dark">
+      <div class="card-header bg-dark text-white">User Profile</div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-3">
+            <p class="mb-0">Full Name</p>
+          </div>
+          <div class="col-sm-9">
+            <p class="text-muted mb-0"><%= user.name %></p>
+          </div>
+        </div>
+        <hr />
+        <div class="row">
+          <div class="col-sm-3">
+            <p class="mb-0">Email</p>
+          </div>
+          <div class="col-sm-9">
+            <p class="text-muted mb-0"><%= user.email %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card border-dark mb-4">
+      <div class="card-header bg-dark text-white">
+        About Me <% if (currentUser && currentUser._id.toString() ===
+        user._id.toString()) { %>
+        <div class="float-end">
+          <a href="#" class="text-decoration-none text-white">
+            <i
+              class="bi bi-pencil-fill text-primary"
+              style="font-size: 1rem"
+              data-bs-toggle="modal"
+              data-bs-target="#editAboutMeModal"
+            >
+            </i>
+          </a>
+        </div>
+        <% } %>
+      </div>
+      <div class="card-body">
+        <p><%= user.bio %></p>
+      </div>
+    </div>
+    <div class="row row-cols-1 row-cols-md-3 g-4" data-bs-theme="dark">
+      <% campgrounds.forEach(campground => { %>
+
+      <div class="col">
+        <div class="card h-100 mb-4">
+          <img
+            src="<%= campground.image %>"
+            class="card-img-top"
+            alt="<%= campground.title %>"
+          />
+          <div class="card-body">
+            <h5 class="card-title">
+              <a href="/campgrounds/<%= campground._id %>">
+                <%= campground.title %></a
+              >
+            </h5>
+            <p class="card-text"><%= campground.description %></p>
+          </div>
+          <div class="card-footer">
+            <small class="text-body-secondary"
+              ><%= campground.location %></small
+            >
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Structure for editing 'About Me' -->
+<div
+  class="modal fade"
+  id="editAboutMeModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit About Me</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form action="/profile/<%= user.username %>/editBio" method="POST">
+        <div class="modal-body">
+          <textarea
+            class="form-control"
+            id="aboutMeTextarea"
+            name="bio"
+            rows="5"
+          >
+<%= user.bio %></textarea
+          >
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

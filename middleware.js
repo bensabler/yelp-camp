@@ -2,6 +2,7 @@ const { campgroundSchema, reviewSchema } = require("./schemas.js");
 const ExpressError = require("./utils/ExpressError");
 const Campground = require("./models/campground");
 const Review = require("./models/review");
+const User = require("./models/user");
 
 module.exports.isLoggedIn = (req, res, next) => {
   // Ensure the user is authenticated before accessing the form
@@ -22,8 +23,10 @@ module.exports.storeReturnTo = (req, res, next) => {
 
 // Middleware to validate the campground data
 module.exports.validateCampground = (req, res, next) => {
+  console.log(req.body);
+  const campground = req.body;
   // Validate the request body against the campground schema
-  const { error } = campgroundSchema.validate(req.body);
+  const { error } = campgroundSchema.validate(campground);
   if (error) {
     // Extract the validation error messages
     const msg = error.details.map((el) => el.message).join(",");
@@ -76,4 +79,23 @@ module.exports.validateReview = (req, res, next) => {
     // If no errors, proceed to the next middleware
     next();
   }
+};
+
+module.exports.isProfileOwner = async (req, res, next) => {
+  // Extract the username from the request parameters
+  const { username } = req.params;
+  // Retrieve the user with the given username
+  const user = await User.findOne({ username: username });
+  // If no user is found or if the logged-in user is not defined, redirect with an error
+  if (!user || !req.user) {
+    req.flash("error", "User not found or not logged in.");
+    return res.redirect("/campgrounds");
+  }
+  // Check if the logged-in user's ID matches the retrieved user's ID
+  if (!req.user._id.equals(user._id)) {
+    req.flash("error", "You do not have permission to view this profile!");
+    return res.redirect("/campgrounds");
+  }
+  // If the current user matches the profile, proceed to the next middleware
+  next();
 };

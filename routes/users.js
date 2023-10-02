@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const catchAsync = require("../utils/catchAsync");
-const { storeReturnTo } = require("../middleware");
+const { storeReturnTo, isLoggedIn, isProfileOwner } = require("../middleware");
 const users = require("../controllers/user");
 
 router
@@ -24,6 +24,24 @@ router
     }),
     users.loginUser
   );
+
+// Route to render the user profile page
+router.get("/profile/:username", isLoggedIn, catchAsync(users.renderProfile));
+
+// Route to render the edit profile page
+router.get(
+  "/profile/:username/edit",
+  isLoggedIn,
+  isProfileOwner,
+  catchAsync(users.renderEditProfile)
+);
+
+router.post(
+  "/profile/:username/editBio",
+  isLoggedIn,
+  isProfileOwner,
+  catchAsync(users.updateBio)
+);
 
 // Route to handle user logout
 router.get("/logout", users.logoutUser);

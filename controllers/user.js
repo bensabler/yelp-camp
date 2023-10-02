@@ -1,33 +1,38 @@
 const User = require("../models/user");
+const Campground = require("../models/campground");
 
 module.exports.renderRegisterForm = (req, res) => {
   res.render("users/register"); // Rendering the registration form
 };
 
-module.exports.registerUser = async (req, res) => {
-  // Using the catchAsync utility to handle async operations
+module.exports.registerUser = async (req, res, next) => {
   try {
-    // Destructuring relevant information from the request body
-    const { email, username, password } = req.body;
-    // Creating a new user instance with email and username (password will be handled by passport)
-    const user = new User({ email, username });
-    // Using passport's register method to handle password hashing and save the user to the database
+    const { email, username, password, name, tos, repeatPassword } = req.body;
+
+    if (password !== repeatPassword) {
+      req.flash("error", "Passwords do not match.");
+      return res.redirect("/register");
+    }
+
+    if (!tos) {
+      // Check if 'tos' is not truthy
+      req.flash("error", "You must agree to the Terms of Service.");
+      return res.redirect("/register");
+    }
+
+    const tosAccepted = tos === "true";
+    const user = new User({ email, username, name, tosAccepted });
+
     const registeredUser = await User.register(user, password);
-    // Using passport's login method to log the user in
     req.login(registeredUser, (err) => {
-      // If there is an error, throw an error
       if (err) {
         return next(err);
       }
-      // Flash a welcome message to the user
       req.flash("success", "Welcome to YelpCamp!");
-      // Redirecting user to campgrounds page after successful registration
       res.redirect("/campgrounds");
     });
   } catch (err) {
-    // In case of an error, flash the error message
     req.flash("error", err.message);
-    // Redirect user back to registration page
     res.redirect("/register");
   }
 };
@@ -45,6 +50,25 @@ module.exports.loginUser = (req, res) => {
   res.redirect(redirectUrl);
 };
 
+module.exports.renderProfile = async (req, res) => {
+  // Extract the username from the request parameters
+  const { username } = req.params;
+
+  // Find the user by username
+  const user = await User.findOne({ username: username });
+
+  if (!user) {
+    req.flash("error", "User not found.");
+    return res.redirect("/"); // Redirect to home or another appropriate page
+  }
+
+  // Find the campgrounds where the author field matches the user's id
+  const campgrounds = await Campground.find({ author: user._id });
+
+  // Render the profile page with the user object and their campgrounds
+  res.render("users/profile", { user, campgrounds });
+};
+
 module.exports.logoutUser = (req, res, next) => {
   req.logout(function (err) {
     if (err) {
@@ -53,4 +77,31 @@ module.exports.logoutUser = (req, res, next) => {
     req.flash("success", "Goodbye!");
     res.redirect("/campgrounds");
   });
+};
+
+module.exports.renderEditProfile = async (req, res) => {
+  // Extract the username from the request parameters
+  const { username } = req.params;
+
+  // Find the user by username
+  const user = await User.findOne({ username: username });
+
+  if (!user) {
+    req.flash("error", "User not found.");
+    return res.redirect("/"); // Redirect to home or another appropriate page
+  }
+
+  // Render the edit profile page with the user object
+  res.render("users/edit", { user });
+};
+
+module.exports.updateBio = async (req, res) => {
+  const { username } = req.params;
+  const { bio } = req.body;
+
+  // Find user and update bio
+  await User.findOneAndUpdate({ username: username }, { bio: bio });
+
+  req.flash("success", "Bio updated successfully!");
+  res.redirect(`/profile/${username}`);
 };
