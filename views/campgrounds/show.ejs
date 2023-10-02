@@ -3,11 +3,14 @@
 <div class="row">
   <div class="col-6">
     <div class="card mb-3">
+      <% for(let img of campground.image) { %>
       <img
-        src="<%= campground.image %>"
+        src="<%= img.url %>"
         alt="<%= campground.title %>"
         class="card-img-top"
       />
+      <% } %>
+
       <div class="card-body">
         <h5 class="card-title"><%= campground.title %></h5>
         <p class="card-text"><%= campground.description %></p>
@@ -64,12 +67,6 @@
             checked
             aria-label="No rating."
           />
-          <!-- <input
-            type="radio"
-            id="first-rate1"
-            name="review[rating]"
-            value="1"
-          /> -->
           <label for="first-rate1" title="Terrible">1 star</label>
           <input
             type="radio"
