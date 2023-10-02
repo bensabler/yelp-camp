@@ -2,7 +2,12 @@ const express = require("express");
 const router = express.Router();
 const campgrounds = require("../controllers/campground");
 const catchAsync = require("../utils/catchAsync");
-const { isLoggedIn, isAuthor, validateCampground } = require("../middleware");
+const {
+  isLoggedIn,
+  isAuthor,
+  validateCampground,
+  limitImageUpload,
+} = require("../middleware");
 const multer = require("multer");
 const { storage } = require("../cloudinary");
 const upload = multer({ storage });
@@ -15,6 +20,7 @@ router
   .post(
     isLoggedIn,
     upload.array("image"),
+    limitImageUpload,
     validateCampground,
     catchAsync(campgrounds.createCampground)
   );
@@ -31,6 +37,7 @@ router
     isLoggedIn,
     isAuthor,
     upload.array("image"),
+    limitImageUpload,
     validateCampground,
     catchAsync(campgrounds.updateCampground)
   )

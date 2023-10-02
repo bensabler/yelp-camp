@@ -1,4 +1,4 @@
-const { campgroundSchema, reviewSchema } = require("./schemas.js");
+const { campgroundSchema, reviewSchema, userSchema } = require("./schemas.js");
 const ExpressError = require("./utils/ExpressError");
 const Campground = require("./models/campground");
 const Review = require("./models/review");
@@ -23,7 +23,6 @@ module.exports.storeReturnTo = (req, res, next) => {
 
 // Middleware to validate the campground data
 module.exports.validateCampground = (req, res, next) => {
-  console.log(req.body);
   const campground = req.body;
   // Validate the request body against the campground schema
   const { error } = campgroundSchema.validate(campground);
@@ -98,4 +97,23 @@ module.exports.isProfileOwner = async (req, res, next) => {
   }
   // If the current user matches the profile, proceed to the next middleware
   next();
+};
+
+module.exports.limitImageUpload = (req, res, next) => {
+  if (req.files.length > 10) {
+    req.flash("error", "You can upload a maximum of 10 images per campground.");
+    return res.redirect("back"); // redirect to the previous page
+  }
+  next();
+};
+
+module.exports.validateUser = (req, res, next) => {
+  const user = req.body;
+  const { error } = userSchema.validate(user);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
 };

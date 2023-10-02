@@ -79,8 +79,25 @@ app.all("*", (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  const { statusCode = 500, message = "Something went wrong" } = err;
-  if (!err.message) err.message = "Oh no, something went wrong!";
+  if (err.name === "ValidationError") {
+    const messages = Object.values(err.errors).map((val) => val.message);
+    const statusCode = 400; // Bad Request
+    const errorMessage = messages.join(" ");
+    return res.status(statusCode).render("error", {
+      err: { message: errorMessage, statusCode: statusCode },
+    });
+  }
+
+  if (err.name === "CastError") {
+    const statusCode = 400; // Bad Request
+    const errorMessage = "Invalid ID provided";
+    return res.status(statusCode).render("error", {
+      err: { message: errorMessage, statusCode: statusCode },
+    });
+  }
+
+  // default error handling:
+  const { statusCode = 500 } = err;
   res.status(statusCode).render("error", { err });
 });
 
