@@ -28,14 +28,6 @@ router
 // Route to render the user profile page
 router.get("/profile/:username", isLoggedIn, catchAsync(users.renderProfile));
 
-// Route to render the edit profile page
-router.get(
-  "/profile/:username/edit",
-  isLoggedIn,
-  isProfileOwner,
-  catchAsync(users.renderEditProfile)
-);
-
 router.post(
   "/profile/:username/editBio",
   isLoggedIn,
