@@ -1,34 +1,42 @@
+// Importing the campground model
 const Campground = require("../models/campground");
 
+// Controller to fetch and display all campgrounds
 module.exports.index = async (req, res) => {
-  // Fetch all campgrounds from the database
+  // Fetching all the campgrounds from the database
   const campgrounds = await Campground.find({});
-  // Render the campgrounds index view with the retrieved campgrounds
+  // Rendering the index view and passing in the fetched campgrounds
   res.render("campgrounds/index", { campgrounds });
 };
 
+// Controller to render the new campground form
 module.exports.renderCampgroundForm = (req, res) => {
-  // Render the new campground form
   res.render("campgrounds/new");
 };
 
+// Controller to handle creation of a new campground
 module.exports.createCampground = async (req, res, next) => {
-  // Create a new Campground instance with the request body data
+  // Create a new instance of the Campground model using the form data
   const campground = new Campground(req.body.campground);
-  // Set the author of the campground to the current user
+  // Process uploaded images, setting URLs and filenames for the campground
+  campground.image = req.files.map((f) => ({
+    url: f.path,
+    filename: f.filename,
+  }));
+  // Set the author to the currently logged-in user
   campground.author = req.user._id;
-  // Save the new campground to the database
+  // Save the new campground instance to the database
   await campground.save();
-  // Flash a success message and redirect to the campground's details page
+  console.log(campground);
+  // Flash a success message and redirect to the new campground's detail page
   req.flash("success", "Successfully made a new campground!");
   res.redirect(`/campgrounds/${campground._id}`);
 };
 
+// Controller to display details of a single campground
 module.exports.showCampground = async (req, res) => {
-  // Extract the campground ID from the request parameters
   const { id } = req.params;
-  // Find the campground with the provided ID
-  // Populate the author of the campground and the reviews associated with it
+  // Fetch the campground by its ID, populating its reviews and authors
   const campground = await Campground.findById(id)
     .populate({
       path: "reviews",
@@ -37,47 +45,42 @@ module.exports.showCampground = async (req, res) => {
       },
     })
     .populate("author");
-  // If the campground does not exist, flash an error message and redirect
+  // If the campground isn't found, display an error and redirect
   if (!campground) {
     req.flash("error", "Cannot find that campground!");
     return res.redirect("/campgrounds");
   }
-  // Render the campground details view with the retrieved campground
+  // Render the campground's detail view
   res.render("campgrounds/show", { campground });
 };
 
+// Controller to render the edit form for a campground
 module.exports.renderEditForm = async (req, res) => {
-  // Extract the campground ID from the request parameters
   const { id } = req.params;
-  // Find the campground with the provided ID
   const campground = await Campground.findById(id);
-  // If the campground does not exist, flash an error message and redirect
   if (!campground) {
     req.flash("error", "Cannot find that campground!");
     return res.redirect("/campgrounds");
   }
-  // Render the edit form for the found campground
   res.render("campgrounds/edit", { campground });
 };
 
+// Controller to handle updating a campground
 module.exports.updateCampground = async (req, res) => {
-  // Extract the campground ID from the request parameters
   const { id } = req.params;
-  // Update the campground with the provided data from the request body
+  // Find the campground by its ID and update it with the new data
   const campground = await Campground.findByIdAndUpdate(id, {
     ...req.body.campground,
   });
-  // Flash a success message and redirect to the updated campground's details page
   req.flash("success", "Successfully updated campground!");
   res.redirect(`/campgrounds/${campground._id}`);
 };
 
+// Controller to handle deleting a campground
 module.exports.deleteCampground = async (req, res) => {
-  // Extract the campground ID from the request parameters
   const { id } = req.params;
-  // Remove the campground from the database
+  // Find the campground by its ID and delete it
   await Campground.findByIdAndDelete(id);
-  // Flash a success message and redirect to the campgrounds index
   req.flash("success", "Successfully deleted campground!");
   res.redirect("/campgrounds");
 };

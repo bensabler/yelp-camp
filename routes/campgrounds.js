@@ -12,15 +12,12 @@ router
   // Route to display all campgrounds
   .get(catchAsync(campgrounds.index))
   // Route to handle the creation of a new campground
-  // .post(
-  //   isLoggedIn,
-  //   validateCampground,
-  //   catchAsync(campgrounds.createCampground)
-  // );
-  .post(upload.array("image"), (req, res) => {
-    console.log(req.body, req.files);
-    res.send("It worked!");
-  });
+  .post(
+    isLoggedIn,
+    upload.array("image"),
+    validateCampground,
+    catchAsync(campgrounds.createCampground)
+  );
 
 // Route to display the form for creating a new campground
 router.get("/new", isLoggedIn, campgrounds.renderCampgroundForm);
