@@ -57,13 +57,30 @@
         />
         <div class="valid-feedback">Looks good!</div>
       </div>
+
       <div class="mb-3">
-        <input type="file" name="image" id="image" multiple />
+        <label for="image" class="form-label">Add Images</label>
+        <div class="input-group">
+          <input
+            type="file"
+            class="form-control d-none"
+            id="image"
+            name="image"
+            multiple
+            aria-label="Upload"
+          />
+          <label class="form-control" for="image" aria-label="Choose file"
+            >Choose image(s)...</label
+          >
+          <button class="btn btn-outline-dark" type="button" id="browseImages">
+            Browse
+          </button>
+        </div>
       </div>
       <div class="mb-3">
-        <button class="btn btn-success">Add Campground</button>
+        <button class="btn btn-dark">Add Campground</button>
       </div>
-      <div><a href="/campgrounds">Cancel</a></div>
+      <div><a href="/campgrounds" class="btn btn-outline-dark">Cancel</a></div>
     </form>
   </div>
 </div>
