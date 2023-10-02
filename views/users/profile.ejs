@@ -88,7 +88,19 @@
           </div>
         </div>
       </div>
-      <% }) %>
+      <% }) %> <% if (currentUser && currentUser._id.toString() ===
+      user._id.toString()) { %>
+      <div class="col">
+        <a href="/campgrounds/new">
+          <div class="card h-100 mb-4">
+            <div class="card-body text-center">
+              <i class="bi bi-plus-circle text-white" style="font-size: 5rem">
+              </i>
+            </div>
+          </div>
+        </a>
+      </div>
+      <% } %>
     </div>
   </div>
 </div>
