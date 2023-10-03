@@ -1,6 +1,24 @@
+<!-- 
+  Check if the 'success' flash message is available and has content.
+  If it does, then display a green (success) alert box.
+-->
 <% if (success && success.length) { %>
+<!-- 
+    Create a Bootstrap-styled alert for successful messages. 
+    This alert is styled green to represent a successful action or event.
+  -->
 <div class="alert alert-success alert-dismissable fade show" role="alert">
+  <!-- 
+      Render the success message dynamically.
+      The strong tag is used to give emphasis to the success message text.
+    -->
   <strong><%= success %></strong>
+
+  <!-- 
+      This button allows the user to close or dismiss the alert manually.
+      The 'btn-close' class styles the button while 'float-end' ensures it stays on the right side.
+      'data-bs-dismiss' attribute ensures the Bootstrap functionality of closing the alert is enabled.
+    -->
   <button
     type="button"
     class="btn-close float-end"
@@ -8,9 +26,29 @@
     aria-label="Close"
   ></button>
 </div>
-<% } %> <% if (error && error.length) { %>
+<% } %>
+
+<!-- 
+  Check if the 'error' flash message is available and has content.
+  If it does, then display a red (error) alert box.
+-->
+<% if (error && error.length) { %>
+<!-- 
+    Create a Bootstrap-styled alert for error messages. 
+    This alert is styled red to represent an error or warning.
+  -->
 <div class="alert alert-danger alert-dismissable fade show" role="alert">
+  <!-- 
+      Render the error message dynamically.
+      The strong tag is used to give emphasis to the error message text.
+    -->
   <strong><%= error %></strong>
+
+  <!-- 
+      This button allows the user to close or dismiss the alert manually.
+      The 'btn-close' class styles the button while 'float-end' ensures it stays on the right side.
+      'data-bs-dismiss' attribute ensures the Bootstrap functionality of closing the alert is enabled.
+    -->
   <button
     type="button"
     class="btn-close float-end"

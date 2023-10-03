@@ -1,9 +1,18 @@
+<!-- 
+  Start of the navigation bar. It's styled with Bootstrap classes. 
+  It's set to be "sticky" so it remains at the top of the page as you scroll.
+  The "data-bs-theme" attribute sets a dark theme for the Bootstrap components.
+-->
 <nav
   class="navbar navbar-expand-lg sticky-top bg-dark border-bottom border-body"
   data-bs-theme="dark"
 >
+  <!-- Container to hold the contents of the navigation bar -->
   <div class="container-fluid">
+    <!-- Branding for the site. This is usually the site name or logo -->
     <a class="navbar-brand" href="#">YelpCamp</a>
+
+    <!-- Button for toggling the navigation bar on small screens -->
     <button
       class="navbar-toggler"
       type="button"
@@ -13,17 +22,35 @@
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
+      <!-- Visual icon for the toggle button -->
       <span class="navbar-toggler-icon"></span>
     </button>
+
+    <!-- Container for the navigation links -->
     <div class="collapse navbar-collapse" id="navbarNav">
+      <!-- Navigation links visible on all screens -->
       <div class="navbar-nav">
         <a class="nav-link" href="/">Home</a>
         <a class="nav-link" href="/campgrounds">Campgrounds</a>
       </div>
+
+      <!-- 
+        Conditional navigation links that change based on the login status of the user. 
+        Positioned to the right using "ms-auto" for margin spacing to auto push to the right.
+      -->
       <div class="navbar-nav ms-auto">
+        <!-- 
+          This block is rendered if there's no currently logged-in user. 
+          Displaying links to login and register pages.
+        -->
         <% if(!currentUser){ %>
         <a class="nav-link" href="/login">Login</a>
         <a class="nav-link" href="/register">Register</a>
+
+        <!-- 
+          This block is rendered if there's a currently logged-in user. 
+          Displaying links to the user's profile and logout.
+        -->
         <% } else {%>
         <a class="nav-link" href="/profile/<%= currentUser.username %>">
           My Profile</a

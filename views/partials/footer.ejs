@@ -1,5 +1,19 @@
+<!-- 
+  Start of the footer section. 
+  It's styled with Bootstrap classes for a dark background, padding on the Y-axis, 
+  and auto margin on the top to ensure it stays at the bottom of its container.
+-->
 <footer class="footer bg-dark py-3 mt-auto text-white">
+  <!-- 
+    A container to hold the contents of the footer. 
+    The contents are centered using Bootstrap's d-flex and justify-content-center.
+  -->
   <div class="container d-flex justify-content-center">
+    <!-- 
+      Display the site's copyright notice. 
+      The embedded JavaScript outputs the current year, 
+      ensuring the copyright notice is always up to date.
+    -->
     <span>YelpCamp Copyright &copy; <%= new Date().getFullYear() %> </span>
   </div>
 </footer>
