@@ -14,6 +14,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user");
 
+const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 
 const userRoutes = require("./routes/users");
@@ -55,6 +56,40 @@ const sessionConfig = {
 };
 app.use(session(sessionConfig));
 app.use(flash());
+
+const scriptSrcUrls = [
+  "https://stackpath.bootstrapcdn.com",
+  "https://cdnjs.cloudflare.com",
+  "https://cdn.jsdelivr.net",
+];
+
+const styleSrcUrls = [
+  "https://stackpath.bootstrapcdn.com",
+  "https://cdn.jsdelivr.net",
+];
+
+const imgSrcUrls = [
+  "https://res.cloudinary.com/dr6ra3p17/",
+  "https://images.unsplash.com/",
+];
+
+const connectSrcUrls = ["https://res.cloudinary.com"];
+const fontSrcUrls = ["https://cdn.jsdelivr.net"];
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: [],
+        connectSrc: ["'self'", ...connectSrcUrls],
+        imgSrc: ["'self'", "blob:", "data:", ...imgSrcUrls],
+        scriptSrc: ["'self'", "'unsafe-inline'", ...scriptSrcUrls],
+        styleSrc: ["'self'", ...styleSrcUrls, "'unsafe-inline'"],
+        fontSrc: ["'self'", ...fontSrcUrls],
+      },
+    },
+  })
+);
 
 app.use(passport.initialize()); // sets up passport
 app.use(passport.session()); // allows persistent login sessions

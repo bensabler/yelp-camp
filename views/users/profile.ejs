@@ -63,15 +63,16 @@
         <p><%= user.bio %></p>
       </div>
     </div>
-    <div class="row row-cols-1 row-cols-md-3 g-4" data-bs-theme="dark">
+    <div class="row row-cols-3 g-4" data-bs-theme="dark">
       <% campgrounds.forEach(campground => { %>
 
       <div class="col">
         <div class="card h-100 mb-4">
           <img
-            src="<%= campground.image %>"
+            src="<%= campground.image[0].url %>"
             class="card-img-top"
             alt="<%= campground.title %>"
+            crossorigin="anonymous"
           />
           <div class="card-body">
             <h5 class="card-title">
