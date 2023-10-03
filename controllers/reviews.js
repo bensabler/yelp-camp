@@ -1,36 +1,54 @@
-const Review = require("../models/review");
-const Campground = require("../models/campground");
+// Import necessary models
+const Review = require("../models/review"); // Mongoose model for reviews.
+const Campground = require("../models/campground"); // Mongoose model for campgrounds.
 
+// ==============================
+// CONTROLLERS FOR REVIEW ROUTES
+// ==============================
+
+// Create a new review for a specific campground.
 module.exports.createReview = async (req, res) => {
-  // Find the campground by its ID
+  // Retrieve the specified campground using its unique ID.
   const campground = await Campground.findById(req.params.id);
-  // Create a new review using the incoming request body
+
+  // Create a new instance of the Review model using the submitted form data.
   const review = new Review(req.body.review);
-  // Set the review's author to the current user
+
+  // Associate the currently authenticated user as the author of the new review.
   review.author = req.user._id;
-  // Add the new review to the campground's reviews array
+
+  // Add the newly created review to the campground's collection of reviews.
   campground.reviews.push(review);
-  // Save the review to the database
+
+  // Persist the new review to the database.
   await review.save();
-  // Save the updated campground to the database
+
+  // Save the changes made to the campground (i.e., the added review) in the database.
   await campground.save();
-  // Flash a success message to the user
+
+  // Provide feedback to the user indicating the successful creation of the review.
   req.flash("success", "Created new review!");
-  // Redirect the user to the campground's page
+
+  // Redirect the user to the detailed view of the associated campground.
   res.redirect(`/campgrounds/${campground._id}`);
 };
 
+// Delete a specific review from a specific campground.
 module.exports.deleteReview = async (req, res) => {
-  // Extract the campground ID and review ID from the request parameters
+  // Destructure the campground's ID and the review's ID from the request's parameters.
   const { id, reviewId } = req.params;
-  // Find the campground by its ID and pull (remove) the review from its reviews array
+
+  // Update the specified campground in the database by removing the specified review from its reviews collection.
   await Campground.findByIdAndUpdate(id, {
     $pull: { reviews: reviewId },
   });
-  // Delete the review from the database
+
+  // Permanently remove the specified review from the database.
   await Review.findByIdAndDelete(reviewId);
-  // Flash a success message to the user
+
+  // Provide feedback to the user indicating the successful deletion of the review.
   req.flash("success", "Successfully deleted review!");
-  // Redirect the user back to the campground's page
+
+  // Redirect the user back to the detailed view of the associated campground.
   res.redirect(`/campgrounds/${id}`);
 };
