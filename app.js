@@ -103,7 +103,7 @@ const store = MongoStore.create({
   // mongoUrl: dbUrl,
   touchAfter: 24 * 60 * 60, // The time period in seconds after which the session will be updated.
   crypto: {
-    secret: "thisshouldbeabettersecret!",
+    secret: "thisshouldbeabettersecret!", // The secret used to sign the session ID cookie.
   },
 });
 
@@ -111,13 +111,12 @@ store.on("error", function (e) {
   console.log("Session store error", e);
 });
 
-const secret = process.env.SECRET;
 // Configure session settings:
 // Sessions allow us to persist data across requests. They're a way to store data on the server-side which can be accessed between multiple requests.
 const sessionConfig = {
   store, // The session store to use.
   name: "sesh", // The name of the cookie to be set in the user's browser. It's the identifier for the session.
-  secret: secret, // This is used to sign the session ID cookie. Can be a string or an array of multiple secrets.
+  secret: "thisshouldbeabettersecret!", // This is used to sign the session ID cookie. Can be a string or an array of multiple secrets.
   resave: false, // Forces the session to be saved back to the session store, even if the session was never modified during the request.
   saveUninitialized: true, // Forces a session that is "uninitialized" (new but not modified) to be saved to the store.
   cookie: {
