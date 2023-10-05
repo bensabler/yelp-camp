@@ -9,8 +9,6 @@
           alt="avatar"
         ></i>
         <h5 class="my-3"><%= user.username %></h5>
-        <p class="text-muted mb-1">Full Stack Developer</p>
-        <p class="text-muted mb-4">Bay Area, San Francisco, CA</p>
         <div class="d-flex justify-content-center mb-2">
           <button type="button" class="btn btn-outline-dark ms-1">
             Message
@@ -63,7 +61,7 @@
         <p><%= user.bio %></p>
       </div>
     </div>
-    <div class="row row-cols-3 g-4" data-bs-theme="dark">
+    <div class="row row-cols-1 row-cols-md-3 g-4" data-bs-theme="dark">
       <% campgrounds.forEach(campground => { %>
 
       <div class="col">
