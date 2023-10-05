@@ -112,6 +112,11 @@ module.exports.limitImageUpload = (req, res, next) => {
 // like email and username, meets certain criteria for security and consistency.
 module.exports.validateUser = (req, res, next) => {
   const { error } = userSchema.validate(req.body); // Validate the incoming user data against the predefined schema.
+  console.log(req.body);
+  if (req.body.password !== req.body.repeat_password) {
+    console.error("Passwords do not actually match!");
+  }
+  // If there are validation errors...
   if (error) {
     // If there are validation errors...
     const msg = error.details.map((el) => el.message).join(","); // Aggregate error messages.

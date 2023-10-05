@@ -24,6 +24,10 @@ const ejsMate = require("ejs-mate");
 // Session data is stored server-side, but can be stored client-side if configured to do so.
 const session = require("express-session");
 
+// `connect-mongo` is a MongoDB session store for Express.
+// It uses MongoDB to store session data.
+const MongoStore = require("connect-mongo");
+
 // The `connect-flash` middleware is used to store temporary messages.
 // Messages are saved in the session and can be extracted in views and then deleted.
 const flash = require("connect-flash");
@@ -59,6 +63,8 @@ const reviewRoutes = require("./routes/reviews"); // Router for all review-relat
 // Connect to MongoDB database:
 // Here, we're asking Mongoose to connect to a MongoDB instance running on our local machine.
 // The path specifies a "yelp-camp" database. If it doesn't exist, MongoDB will create it for us.
+const dbUrl = process.env.DB_URL;
+// "mongodb://localhost:27017/yelp-camp";
 mongoose.connect("mongodb://localhost:27017/yelp-camp", {
   useUnifiedTopology: true,
 });
@@ -89,9 +95,26 @@ app.use(methodOverride("_method")); // Let's you use HTTP verbs like PUT or DELE
 app.use(express.static(path.join(__dirname, "public"))); // Define where static assets like stylesheets, scripts, and images are located.
 app.use(mongoSanitize()); // Middleware to sanitize data by preventing data which includes MongoDB operators.
 
+// Configure session store:
+// This tells Express to use the MongoDB session store.
+// This is necessary to store session data in the database.
+const store = MongoStore.create({
+  mongoUrl: "mongodb://localhost:27017/yelp-camp", // The URL to the MongoDB instance.
+  // mongoUrl: dbUrl,
+  touchAfter: 24 * 60 * 60, // The time period in seconds after which the session will be updated.
+  crypto: {
+    secret: "thisshouldbeabettersecret!",
+  },
+});
+
+store.on("error", function (e) {
+  console.log("Session store error", e);
+});
+
 // Configure session settings:
 // Sessions allow us to persist data across requests. They're a way to store data on the server-side which can be accessed between multiple requests.
 const sessionConfig = {
+  store, // The session store to use.
   name: "sesh", // The name of the cookie to be set in the user's browser. It's the identifier for the session.
   secret: "thisshouldbeabettersecret!", // This is used to sign the session ID cookie. Can be a string or an array of multiple secrets.
   resave: false, // Forces the session to be saved back to the session store, even if the session was never modified during the request.

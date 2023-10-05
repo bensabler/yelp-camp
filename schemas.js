@@ -62,10 +62,13 @@ module.exports.userSchema = Joi.object({
   email: Joi.string().email().required().max(200).escapeHTML(),
   username: Joi.string().alphanum().min(3).max(30).required().escapeHTML(),
   password: Joi.string()
+    .required()
     .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")) // Password pattern constraint
-    .max(30)
-    .escapeHTML(),
-  repeat_password: Joi.ref("password"), // Password confirmation should match the password
+    .max(30),
+  repeat_password: Joi.any()
+    .equal(Joi.ref("password"))
+    .required()
+    .label("Repeat password"),
   tosAccepted: Joi.boolean().required(), // Acceptance of Terms of Service
   bio: Joi.string()
     .allow("")

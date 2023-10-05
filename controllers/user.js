@@ -16,23 +16,24 @@ module.exports.renderRegisterForm = (req, res) => {
 module.exports.registerUser = async (req, res, next) => {
   try {
     // Destructure fields from the request's body
-    const { email, username, password, name, tos, repeatPassword } = req.body;
+    const { email, username, password, name, tosAccepted, repeat_password } =
+      req.body;
 
     // Check for password consistency
-    if (password !== repeatPassword) {
+    if (password !== repeat_password) {
       req.flash("error", "Passwords do not match.");
       return res.redirect("/register");
     }
 
     // Ensure user accepts the Terms of Service
-    if (!tos) {
+    if (!tosAccepted || tosAccepted !== "true") {
       req.flash("error", "You must agree to the Terms of Service.");
       return res.redirect("/register");
     }
 
     // Create a new User instance
-    const tosAccepted = tos === "true";
-    const user = new User({ email, username, name, tosAccepted });
+    const tos = tosAccepted === "true";
+    const user = new User({ email, username, name, tos });
 
     // Use Passport's register method to save user with hashed password
     const registeredUser = await User.register(user, password);
