@@ -1,57 +1,64 @@
 <!DOCTYPE html>
 <!-- Define the document type as HTML5 -->
 <html lang="en">
-  <!-- Head section contains meta information and links to stylesheets -->
+  <!-- Beginning of the HTML structure with language set to English. -->
   <head>
-    <!-- Character encoding set as UTF-8 for universal character rendering -->
+    <!-- Head section contains meta information and links to stylesheets -->
+
     <meta charset="UTF-8" />
+    <!-- Character encoding is set to UTF-8 for compatibility and universal character rendering. -->
 
-    <!-- Set viewport to control layout on mobile browsers -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Viewport meta tag to ensure the site is optimized and responsive on mobile devices. -->
 
-    <!-- Title of the website displayed on browser tab -->
     <title>Yelp Camp</title>
+    <!-- The title that appears on the browser's tab when this webpage is accessed. -->
 
-    <!-- Link to Bootstrap's CSS for styling and layout. It's being fetched from a CDN for faster load times. -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous"
     />
+    <!-- Link to the Bootstrap CSS library. Bootstrap is a popular CSS framework that aids in website responsiveness and styling. The 'integrity' attribute offers a layer of security to ensure the content hasn't been tampered with. -->
 
-    <!-- Link to Bootstrap icons. This provides a range of icons to be used throughout the site. -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
       crossorigin="anonymous"
     />
+    <!-- Link to Bootstrap's icon library. Provides a variety of icons for use throughout the site. -->
   </head>
 
-  <!-- Body section contains the viewable content of the page -->
   <body class="d-flex flex-column vh-100">
-    <!-- Including the navigation bar partial which contains navigation links -->
-    <%- include('../partials/navbar') %>
+    <!-- Body starts here. The class attributes ensure a flex layout, aligning items in a column and taking up full viewport height. -->
 
-    <!-- Main content of the page wrapped in a Bootstrap container for centered alignment -->
+    <%- include('../partials/navbar') %>
+    <!-- Include the navigation bar partial. This provides consistent navigation across the website. -->
+
     <main class="container my-5">
-      <!-- Include flash messages, useful for displaying temporary messages like errors or success notifications -->
+      <!-- Main content wrapper. "container" class centers the content, and "my-5" provides vertical margins for spacing. -->
+
       <%- include('../partials/flash') %>
-      <!-- Here's where the main body of individual pages will be injected -->
+      <!-- Include the flash messages partial. Useful for displaying temporary notifications, such as errors or success messages. -->
+
       <%- body %>
+      <!-- This is where the main body of individual pages will be inserted. It's a placeholder that gets replaced by the content of the page that uses this boilerplate. -->
     </main>
 
-    <!-- Including the footer partial which contains footer information -->
     <%- include('../partials/footer') %>
+    <!-- Include the footer partial, which contains consistent footer information across pages. -->
 
-    <!-- Linking Bootstrap's JavaScript bundle for functional components like modals and popovers. Loaded from a CDN. -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
+    <!-- Link to Bootstrap's JavaScript bundle. This provides functionality for Bootstrap components like modals, tooltips, and more. -->
 
-    <!-- Link to custom JavaScript file that likely contains form validation scripts -->
     <script src="/javascripts/validateForms.js"></script>
+    <!-- Link to a custom JavaScript file, likely used for form validation throughout the site. -->
   </body>
+  <!-- End of the body section and the webpage's visible content. -->
 </html>
+<!-- End of the HTML structure. -->

@@ -1,7 +1,20 @@
 <% layout('layouts/boilerplate') %>
+<!-- Use the 'boilerplate' layout as the base for this view. -->
+
 <div class="row">
+  <!-- Start a Bootstrap row for the layout. -->
+
   <h1 class="text-center">New Campground</h1>
+  <!-- Display the heading of the page centered. -->
+
   <div class="col-6 offset-3">
+    <!-- Use a Bootstrap column that spans 6 grid units. Additionally, offset it by 3 units from the left for centering. -->
+
+    <!-- Begin the form to create a new campground.
+         The form sends a POST request to the /campgrounds route.
+         The "novalidate" attribute disables browser's default validation, allowing for custom validation.
+         The "enctype" attribute specifies how form data should be encoded before sending it to the server. 
+         "multipart/form-data" is necessary when uploading files (like images). -->
     <form
       action="/campgrounds/"
       method="POST"
@@ -9,6 +22,7 @@
       class="validated-form"
       enctype="multipart/form-data"
     >
+      <!-- Input field for campground title. -->
       <div class="mb-3">
         <label class="form-label" for="title">Title</label>
         <input
@@ -20,6 +34,8 @@
         />
         <div class="valid-feedback">Looks good!</div>
       </div>
+
+      <!-- Input field for campground location. -->
       <div class="mb-3">
         <label class="form-label" for="location">Location</label>
         <input
@@ -31,6 +47,8 @@
         />
         <div class="valid-feedback">Looks good!</div>
       </div>
+
+      <!-- Input field for campground price with a dollar sign prefixed. -->
       <div class="mb-3">
         <label class="form-label" for="price">Campground Price</label>
         <div class="input-group">
@@ -46,6 +64,8 @@
           />
         </div>
       </div>
+
+      <!-- Textarea field for campground description. -->
       <div class="mb-3">
         <label class="form-label" for="description">Description</label>
         <input
@@ -58,6 +78,7 @@
         <div class="valid-feedback">Looks good!</div>
       </div>
 
+      <!-- Input field for adding campground images. -->
       <div class="mb-3">
         <label for="image" class="form-label">Add Images</label>
         <div class="input-group">
@@ -77,21 +98,28 @@
           </button>
         </div>
       </div>
+
+      <!-- Button to submit the form and add the campground. -->
       <div class="mb-3">
         <button class="btn btn-dark">Add Campground</button>
       </div>
+
+      <!-- Button to cancel the operation and go back to the campgrounds list. -->
       <div><a href="/campgrounds" class="btn btn-outline-dark">Cancel</a></div>
     </form>
   </div>
 </div>
 
+<!-- JavaScript to handle file input and display selected file names. -->
 <script>
+  // When the "Browse" button is clicked, trigger the file input.
   document
     .getElementById("browseImages")
     .addEventListener("click", function () {
       document.getElementById("image").click();
     });
 
+  // Update the label with the selected file names.
   document.getElementById("image").addEventListener("change", function () {
     const label = this.previousElementSibling;
     const files = Array.from(this.files)

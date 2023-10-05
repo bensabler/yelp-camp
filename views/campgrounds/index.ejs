@@ -1,9 +1,16 @@
 <% layout('layouts/boilerplate') %>
+
 <h1>Browse Campgrounds</h1>
+
+<!-- Start looping through each campground to display its details. -->
 <% for (let campground of campgrounds) {%>
+
+<!-- Each campground is displayed within a Bootstrap card. -->
 <div class="card mb-3">
   <div class="row">
+    <!-- Left column for displaying the image. -->
     <div class="col-md-4">
+      <!-- Check if the campground has images and display the first one. If no images exist, display a default placeholder image. -->
       <% if (campground.image.length) { %>
       <img
         crossorigin="anonymous"
@@ -14,28 +21,32 @@
       <% } else { %>
       <img
         crossorigin="anonymous"
-        src="https://res.cloudinary.com/douqbebwk/image/upload/v1627930734/YelpCamp/no-image-found-360x250_zkhpwj.png"
+        src="/assets/defaultCamp.jpg"
         class="img-fluid"
         alt="<%= campground.title %>"
       />
       <% } %>
     </div>
+
+    <!-- Right column for displaying the title, description, and location of the campground. -->
     <div class="col-md-8">
       <div class="card-body">
         <h5 class="card-title">
           <a href="/campgrounds/<%= campground._id %>">
-            <%= campground.title %></a
-          >
+            <%= campground.title %>
+          </a>
         </h5>
         <p class="card-text"><%= campground.description %></p>
         <p class="card-text">
           <small class="text-muted"><%= campground.location %></small>
         </p>
         <a class="btn btn-primary" href="/campgrounds/<%= campground._id %>">
-          View <%= campground.title %></a
-        >
+          View <%= campground.title %>
+        </a>
       </div>
     </div>
   </div>
 </div>
+
 <% } %>
+<!-- End of the loop. -->

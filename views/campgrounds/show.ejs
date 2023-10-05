@@ -1,99 +1,192 @@
 <% layout('layouts/boilerplate') %>
+
+<!-- Link to the custom stylesheet for the star ratings display -->
 <link rel="stylesheet" href="/stylesheets/stars.css" />
+
+<!-- Begin row for the campground display -->
+<d<% layout('layouts/boilerplate') %>
+<!-- The above line tells EJS to use the boilerplate layout as the base template. -->
+
+<link rel="stylesheet" href="/stylesheets/stars.css" />
+<!-- Importing the stylesheet that presumably provides styles for the star ratings. -->
+
 <div class="row">
+  <!-- Starting a new Bootstrap row to structure the content. -->
+
   <div class="col-6">
+    <!-- Starting a column which takes up half the width of the container. -->
+
     <div id="campgroundCarousel" class="carousel slide" data-ride="carousel">
+      <!-- Starting a Bootstrap carousel component to showcase the images. -->
+
       <div class="carousel-inner">
-        <% for(let i = 0; i < campground.image.length; i++) { %>
+        <!-- This is the container for the carousel items. -->
+
+        <% if(campground.image.length === 0) { %>
+        <!-- If there are no images, we'll display a default placeholder image. -->
+        <img
+          crossorigin="anonymous"
+          src="/assets/defaultCamp.jpg"
+          class="d-block w-100"
+          alt="Image of <%= campground.title %>"
+        />
+        <% } %> <% for(let i = 0; i < campground.image.length; i++) { %>
+        <!-- Looping through each image associated with the campground. -->
+
         <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+          <!-- Each image is placed inside a carousel item. The first image is set as 'active' to be shown first. -->
+
           <img
             crossorigin="anonymous"
             src="<%= campground.image[i].url %>"
             class="d-block w-100"
             alt="Image of <%= campground.title %>"
           />
+          <!-- Displaying the image with dynamic src and alt attributes. -->
         </div>
         <% } %>
       </div>
+      <!-- Ending the carousel inner container. -->
+
       <% if(campground.image.length > 1) { %>
+      <!-- If there's more than one image, we'll add controls for navigating through the carousel. -->
+
       <button
         class="carousel-control-prev"
         type="button"
         data-bs-target="#campgroundCarousel"
         data-bs-slide="prev"
       >
+        <!-- This is the "previous" button for the carousel. -->
+
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Previous</span>
       </button>
+
       <button
         class="carousel-control-next"
         type="button"
         data-bs-target="#campgroundCarousel"
         data-bs-slide="next"
       >
+        <!-- This is the "next" button for the carousel. -->
+
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
       </button>
       <% } %>
     </div>
+    <!-- Ending the carousel component. -->
+
     <div class="card mb-3">
+      <!-- Starting a Bootstrap card component to display details about the campground. -->
+
       <div class="card-body">
+        <!-- The body section of the Bootstrap card, which will contain textual details. -->
+
         <h5 class="card-title"><%= campground.title %></h5>
+        <!-- Display the title of the campground. -->
+
         <p class="card-text"><%= campground.description %></p>
+        <!-- Display the description of the campground. -->
       </div>
+      <!-- End of the card body. -->
+
       <ul class="list-group list-group-flush">
+        <!-- Starting a list group to display some more details about the campground in a list format. -->
+
         <li class="list-group-item text-muted"><%= campground.location %></li>
+        <!-- Display the location of the campground. -->
+
         <li class="list-group-item">
           Managed by:
-          <a href="/profile/<%= campground.author.username %>">
-            <%= campground.author.username %></a
+          <a href="/profile/<%= campground.author.username %>"
+            ><%= campground.author.username %></a
           >
         </li>
+        <!-- Display the manager/author of the campground and link to their profile. -->
+
         <li class="list-group-item">$<%= campground.price %>/night</li>
+        <!-- Display the price of the campground per night. -->
       </ul>
+      <!-- End of the list group. -->
 
       <% if(currentUser && campground.author.equals(currentUser._id)) { %>
+      <!-- Check if the current user is the author of the campground. If they are, they can edit or delete the campground. -->
+
       <div class="card-body">
+        <!-- Start of another card body to hold the edit and delete buttons. -->
+
         <a
           class="btn btn-dark card-link"
           href="/campgrounds/<%= campground._id %>/edit"
           >Edit</a
         >
+        <!-- Provide a link for the user to edit the campground. -->
+
         <form
           class="d-inline"
           action="/campgrounds/<%= campground._id %>?_method=DELETE"
           method="POST"
         >
+          <!-- Form to delete the campground. Uses a query parameter to specify the DELETE HTTP method. -->
+
           <button class="btn btn-danger">Delete</button>
+          <!-- Button to submit the delete form. -->
         </form>
       </div>
+      <!-- End of the card body with the edit and delete buttons. -->
+
       <% } %>
 
       <div class="card-footer text-muted">2 days ago</div>
+      <!-- A card footer displaying when the campground was last updated or reviewed. 
+       Ideally, you'd replace '2 days ago' with dynamic data indicating the actual last update time. -->
     </div>
+    <!-- End of the Bootstrap card component. -->
+
+    <!-- ... Continuing with the rest of the file ... -->
   </div>
 
+  <!-- Right half: Area to leave a review, only displayed if user is logged in -->
   <% if(currentUser) { %>
+  <!-- Check if a user is currently logged in to show them the option to leave a review. -->
+
   <div class="col-6">
+    <!-- Create a column to house the review form and existing reviews. -->
+
     <h2>Leave a Review</h2>
+    <!-- Heading for the review form section. -->
+
     <form
       action="/campgrounds/<%= campground._id %>/reviews"
       method="POST"
       class="mb-3 validated-form"
       novalidate
     >
+      <!-- Start of the review submission form. Sends a POST request to the endpoint to handle reviews. -->
+
       <div class="mb-1">
+        <!-- Container for the star rating system. -->
+
         <fieldset class="starability-basic">
+          <!-- Fieldset to group the star rating inputs together. -->
+
+          <!-- The following radio buttons allow for a star rating system. Each radio corresponds to a rating, from 1 star to 5 stars. -->
+          <!-- The system uses CSS (from the linked stylesheet) to visually display clickable stars. -->
+
+          <!-- Default rating input, not shown to the user. -->
+
+          <!-- The following radio buttons and labels create the star ratings from 1 to 5. -->
           <input
             type="radio"
-            id="no-rate"
-            class="input-no-rate"
+            id="first-rate1"
             name="review[rating]"
             value="1"
             checked
-            aria-label="No rating."
           />
           <label for="first-rate1" title="Terrible">1 star</label>
+
           <input
             type="radio"
             id="first-rate2"
@@ -101,6 +194,7 @@
             value="2"
           />
           <label for="first-rate2" title="Not good">2 stars</label>
+
           <input
             type="radio"
             id="first-rate3"
@@ -108,6 +202,7 @@
             value="3"
           />
           <label for="first-rate3" title="Average">3 stars</label>
+
           <input
             type="radio"
             id="first-rate4"
@@ -115,6 +210,7 @@
             value="4"
           />
           <label for="first-rate4" title="Very good">4 stars</label>
+
           <input
             type="radio"
             id="first-rate5"
@@ -124,9 +220,14 @@
           <label for="first-rate5" title="Amazing">5 stars</label>
         </fieldset>
       </div>
+      <!-- End of star rating system. -->
 
       <div class="mb-3">
+        <!-- Container for the text area where users can type their review. -->
+
         <label for="body" class="form-label">Review</label>
+        <!-- Label for the textarea. -->
+
         <textarea
           class="form-control"
           id="body"
@@ -134,32 +235,67 @@
           rows="3"
           required
         ></textarea>
+        <!-- Textarea for users to type their review. -->
+        <!-- It's required, so users must input something before submitting the form. -->
+
         <div class="valid-feedback">Looks good!</div>
+        <!-- Feedback to show when the input is valid. This works in conjunction with some Bootstrap validation scripts. -->
       </div>
+
       <button type="submit" class="btn btn-success">Submit</button>
+      <!-- Button to submit the review form. -->
     </form>
+    <!-- End of the review submission form. -->
+
     <% for(let review of campground.reviews) { %>
+    <!-- Loop to iterate over all existing reviews for the current campground. -->
+
     <div class="card mb-3">
+      <!-- Start of a Bootstrap card to display each review. -->
+
       <div class="card-body">
+        <!-- Body of the card containing the review details. -->
+
         <p class="starability-result" data-rating="<%= review.rating %>">
+          <!-- Display the star rating for the review using a CSS class to visually show stars. -->
+
           Rated: <%= review.rating %>
+          <!-- Display the numeric rating value. -->
         </p>
+
         <h6 class="card-subtitle mb-2 text-muted">
+          <!-- Display the username of the person who left the review. -->
+
           By <%= review.author.username %>
         </h6>
+
         <p class="card-text">Review: <%= review.body %></p>
+        <!-- Display the review text. -->
+
         <% if(currentUser && review.author.equals(currentUser._id)) { %>
+        <!-- Check if the current user is the author of the review. If they are, they get the option to delete their own review. -->
 
         <form
           action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE"
           method="POST"
         >
+          <!-- Form to delete the review. Uses a query parameter to specify the DELETE HTTP method. -->
+
           <button class="btn btn-danger">Delete</button>
+          <!-- Button to submit the delete form for the review. -->
         </form>
+
         <% } %>
       </div>
     </div>
+    <!-- End of the Bootstrap card for a single review. -->
+
     <% } %>
+    <!-- End of the loop through existing reviews. -->
   </div>
+  <!-- End of the column containing the review form and existing reviews. -->
+
   <% } %>
+  <!-- End check if a user is logged in. -->
 </div>
+<!-- End of the primary row. -->

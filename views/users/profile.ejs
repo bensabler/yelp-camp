@@ -68,12 +68,24 @@
 
       <div class="col">
         <div class="card h-100 mb-4">
+          <% if (campground.image.length) { %>
+
           <img
             src="<%= campground.image[0].url %>"
             class="card-img-top"
             alt="<%= campground.title %>"
             crossorigin="anonymous"
           />
+
+          <% } else { %>
+          <img
+            src="/assets/defaultCamp.jpg"
+            class="card-img-top"
+            alt="<%= campground.title %>"
+            crossorigin="anonymous"
+          />
+          <% } %>
+
           <div class="card-body">
             <h5 class="card-title">
               <a href="/campgrounds/<%= campground._id %>">
